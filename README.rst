@@ -1,3 +1,5 @@
+**Note: This is a custom fork of django-js-reverse, designed to work with Typescript**
+
 =================
 Django JS Reverse
 =================
@@ -107,7 +109,7 @@ Add ``'django_js_reverse'`` to your ``INSTALLED_APPS`` setting.
 
     INSTALLED_APPS = (
         ...
-        'django_js_reverse',        
+        'django_js_reverse',
     )
 
 
@@ -190,6 +192,12 @@ notation instead:
 
 Options
 -------
+
+Declare where you would like the generated Typescript to go.
+
+::
+
+    JS_REVERSE_TS_OUTPUT_PATH = 'some/typescript/dir'
 
 Optionally, you can overwrite the default javascript variable ‘Urls’ used
 to access the named urls by django setting
