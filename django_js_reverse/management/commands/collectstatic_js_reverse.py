@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         return os.path.join(settings.STATIC_ROOT, 'django_js_reverse', 'js')
 
-    def handle(self, file = 'reverse.js', *args, **options):
+    def handle(self, file = 'index.js', *args, **options):
         location = self.get_location()
         fs = FileSystemStorage(location=location)
         if fs.exists(file):
