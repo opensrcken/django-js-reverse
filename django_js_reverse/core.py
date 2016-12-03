@@ -116,7 +116,7 @@ def generate_js(default_urlresolver):
     urls = sorted(list(prepare_url_list(default_urlresolver)))
     for url in urls:
         name, patterns = url
-        url[0] = inflection.camelize(name.replace(':', '_'), False)
+        url[0] = inflection.camelize(re.sub(r'[:-]', '_', name), False)
 
     js_content = loader.render_to_string('django_js_reverse/urls_js.tpl', {
         'urls': urls,
@@ -158,7 +158,7 @@ def generate_ts(default_urlresolver):
     urls = sorted(list(prepare_url_list(default_urlresolver)))
     for url in urls:
         name, patterns = url
-        url[0] = inflection.camelize(name.replace(':', '_'), False)
+        url[0] = inflection.camelize(re.sub(r'[:-]', '_', name), False)
         for pattern in patterns:
             path, args = pattern
             for idx, arg in enumerate(args):
