@@ -193,11 +193,11 @@ notation instead:
 Options
 -------
 
-To emit ES6:
+To emit common JS:
 
 ::
 
-    JS_REVERSE_EMIT_ES6 = True
+    JS_REVERSE_EMIT_COMMON_JS = True
 
 Declare where you would like the generated Typescript to go.
 

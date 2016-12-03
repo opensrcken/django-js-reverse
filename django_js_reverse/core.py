@@ -119,8 +119,8 @@ def generate_js(default_urlresolver):
         name, patterns = url
         url[0] = inflection.camelize(re.sub(r'[:-]', '_', name), False)
 
-    if getattr(settings, 'JS_REVERSE_EMIT_ES6', False):
-        template = 'django_js_reverse/urls_es6.tpl'
+    if getattr(settings, 'JS_REVERSE_EMIT_COMMON_JS', False):
+        template = 'django_js_reverse/urls_common_js.tpl'
     else:
         template = 'django_js_reverse/urls_js.tpl'
 
