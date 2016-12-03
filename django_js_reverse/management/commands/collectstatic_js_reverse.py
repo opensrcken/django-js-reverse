@@ -8,7 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.core.management.base import BaseCommand
-from django_js_reverse.core import generate_js
+from django_js_reverse.core import generate_js, generate_ts
 from django_js_reverse.js_reverse_settings import JS_OUTPUT_PATH
 
 
@@ -34,6 +34,12 @@ class Command(BaseCommand):
 
         default_urlresolver = urlresolvers.get_resolver(None)
         content = generate_js(default_urlresolver)
+        fs.save(file, ContentFile(content))
+        if len(sys.argv) > 1 and sys.argv[1] in ['collectstatic_js_reverse']:
+            self.stdout.write('js-reverse file written to %s' % (location))  # pragma: no cover
+
+        file = 'reverse.ts'
+        content = generate_ts(default_urlresolver)
         fs.save(file, ContentFile(content))
         if len(sys.argv) > 1 and sys.argv[1] in ['collectstatic_js_reverse']:
             self.stdout.write('js-reverse file written to %s' % (location))  # pragma: no cover

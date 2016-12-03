@@ -1,0 +1,9 @@
+{% for name, patterns in urls %}
+  {{ name }}
+  {% for path, args in patterns %}
+    {{ path }}
+    {% for arg in args %}
+      {{ arg }}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}

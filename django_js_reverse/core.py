@@ -122,3 +122,40 @@ def generate_js(default_urlresolver):
     if minfiy:
         js_content = rjsmin.jsmin(js_content)
     return js_content
+
+
+def generate_ts(default_urlresolver):
+    js_var_name = getattr(settings, 'JS_REVERSE_JS_VAR_NAME', JS_VAR_NAME)
+    if not JS_IDENTIFIER_RE.match(js_var_name.upper()):
+        raise ImproperlyConfigured(
+            'JS_REVERSE_JS_VAR_NAME setting "%s" is not a valid javascript identifier.' % (js_var_name))
+
+    js_global_object_name = getattr(settings, 'JS_REVERSE_JS_GLOBAL_OBJECT_NAME', JS_GLOBAL_OBJECT_NAME)
+    if not JS_IDENTIFIER_RE.match(js_global_object_name.upper()):
+        raise ImproperlyConfigured(
+            'JS_REVERSE_JS_GLOBAL_OBJECT_NAME setting "%s" is not a valid javascript identifier.' % (
+                js_global_object_name))
+
+    minfiy = getattr(settings, 'JS_REVERSE_JS_MINIFY', JS_MINIFY)
+    if not isinstance(minfiy, bool):
+        raise ImproperlyConfigured(
+            'JS_REVERSE_JS_MINIFY setting "%s" is not a valid. Needs to be set to True or False.' % (minfiy))
+
+    script_prefix_via_config = getattr(settings, 'JS_REVERSE_SCRIPT_PREFIX', None)
+    if script_prefix_via_config:
+        script_prefix = script_prefix_via_config
+        if not script_prefix.endswith('/'):
+            script_prefix = '{0}/'.format(script_prefix)
+    else:
+        script_prefix = urlresolvers.get_script_prefix()
+
+    ts_content = loader.render_to_string('django_js_reverse/urls_ts.jinja', {
+        'urls': sorted(list(prepare_url_list(default_urlresolver))),
+        'url_prefix': script_prefix,
+        'js_var_name': js_var_name,
+        'js_global_object_name': js_global_object_name,
+    })
+
+    if minfiy:
+        ts_content = rjsmin.jsmin(ts_content)
+    return ts_content
