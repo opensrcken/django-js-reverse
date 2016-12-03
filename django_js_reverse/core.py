@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import inflection
 import re
 import sys
 
@@ -20,7 +21,7 @@ else:
 JS_IDENTIFIER_RE = re.compile(r'^[$A-Z_][\dA-Z_$]*$')
 
 
-def prepare_url_list(urlresolver, namespace_path='', namespace=''):
+def prepare_url_list(urlresolver, namespace_path = '', namespace = ''):
     """
     returns list of tuples [(<url_name>, <url_patern_tuple> ), ...]
     """
@@ -112,8 +113,13 @@ def generate_js(default_urlresolver):
     else:
         script_prefix = urlresolvers.get_script_prefix()
 
+    urls = sorted(list(prepare_url_list(default_urlresolver)))
+    for url in urls:
+        name, patterns = url
+        url[0] = inflection.camelize(name.replace(':', '_'), False)
+
     js_content = loader.render_to_string('django_js_reverse/urls_js.tpl', {
-        'urls': sorted(list(prepare_url_list(default_urlresolver))),
+        'urls': urls,
         'url_prefix': script_prefix,
         'js_var_name': js_var_name,
         'js_global_object_name': js_global_object_name,
@@ -136,11 +142,11 @@ def generate_ts(default_urlresolver):
             'JS_REVERSE_JS_GLOBAL_OBJECT_NAME setting "%s" is not a valid javascript identifier.' % (
                 js_global_object_name))
 
-    minfiy = getattr(settings, 'JS_REVERSE_JS_MINIFY', JS_MINIFY)
-    if not isinstance(minfiy, bool):
-        raise ImproperlyConfigured(
-            'JS_REVERSE_JS_MINIFY setting "%s" is not a valid. Needs to be set to True or False.' % (minfiy))
-
+    # minfiy = getattr(settings, 'JS_REVERSE_JS_MINIFY', JS_MINIFY)
+    # if not isinstance(minfiy, bool):
+    #     raise ImproperlyConfigured(
+    #         'JS_REVERSE_JS_MINIFY setting "%s" is not a valid. Needs to be set to True or False.' % (minfiy))
+    #
     script_prefix_via_config = getattr(settings, 'JS_REVERSE_SCRIPT_PREFIX', None)
     if script_prefix_via_config:
         script_prefix = script_prefix_via_config
@@ -149,13 +155,25 @@ def generate_ts(default_urlresolver):
     else:
         script_prefix = urlresolvers.get_script_prefix()
 
+    urls = sorted(list(prepare_url_list(default_urlresolver)))
+    for url in urls:
+        name, patterns = url
+        url[0] = inflection.camelize(name.replace(':', '_'), False)
+        for pattern in patterns:
+            path, args = pattern
+            for idx, arg in enumerate(args):
+                match = re.match(r'^_(\d+)', arg)
+                if match:
+                    arg = 'param%s' % match.group(1)
+                args[idx] = '%s: string|number' % inflection.camelize(arg.replace(':', '_'), False)
+
+            url[1] = ', '.join(args)
+
     ts_content = loader.render_to_string('django_js_reverse/urls_ts.jinja', {
-        'urls': sorted(list(prepare_url_list(default_urlresolver))),
+        'urls': urls,
         'url_prefix': script_prefix,
         'js_var_name': js_var_name,
         'js_global_object_name': js_global_object_name,
     })
 
-    if minfiy:
-        ts_content = rjsmin.jsmin(ts_content)
     return ts_content

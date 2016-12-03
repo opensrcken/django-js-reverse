@@ -1,9 +1,5 @@
-{% for name, patterns in urls %}
-  {{ name }}
-  {% for path, args in patterns %}
-    {{ path }}
-    {% for arg in args %}
-      {{ arg }}
+interface DjangoUrls {
+  {% for name, args in urls %}
+    {{ name }}({{ args }}): string|number;
     {% endfor %}
-  {% endfor %}
-{% endfor %}
+}
