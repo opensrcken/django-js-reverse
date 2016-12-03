@@ -3,6 +3,7 @@ import inflection
 import re
 import sys
 
+from copy import deepcopy
 from django.conf import settings
 from django.core import urlresolvers
 from django.core.exceptions import ImproperlyConfigured
@@ -113,7 +114,7 @@ def generate_js(default_urlresolver):
     else:
         script_prefix = urlresolvers.get_script_prefix()
 
-    urls = sorted(list(prepare_url_list(default_urlresolver)))
+    urls = sorted(deepcopy(list(prepare_url_list(default_urlresolver))))
     for url in urls:
         name, patterns = url
         url[0] = inflection.camelize(re.sub(r'[:-]', '_', name), False)
@@ -142,11 +143,6 @@ def generate_ts(default_urlresolver):
             'JS_REVERSE_JS_GLOBAL_OBJECT_NAME setting "%s" is not a valid javascript identifier.' % (
                 js_global_object_name))
 
-    # minfiy = getattr(settings, 'JS_REVERSE_JS_MINIFY', JS_MINIFY)
-    # if not isinstance(minfiy, bool):
-    #     raise ImproperlyConfigured(
-    #         'JS_REVERSE_JS_MINIFY setting "%s" is not a valid. Needs to be set to True or False.' % (minfiy))
-    #
     script_prefix_via_config = getattr(settings, 'JS_REVERSE_SCRIPT_PREFIX', None)
     if script_prefix_via_config:
         script_prefix = script_prefix_via_config
@@ -155,7 +151,7 @@ def generate_ts(default_urlresolver):
     else:
         script_prefix = urlresolvers.get_script_prefix()
 
-    urls = sorted(list(prepare_url_list(default_urlresolver)))
+    urls = sorted(deepcopy(list(prepare_url_list(default_urlresolver))))
     for url in urls:
         name, patterns = url
         url[0] = inflection.camelize(re.sub(r'[:-]', '_', name), False)
