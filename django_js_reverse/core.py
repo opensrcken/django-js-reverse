@@ -119,7 +119,12 @@ def generate_js(default_urlresolver):
         name, patterns = url
         url[0] = inflection.camelize(re.sub(r'[:-]', '_', name), False)
 
-    js_content = loader.render_to_string('django_js_reverse/urls_js.tpl', {
+    if getattr(settings, 'JS_REVERSE_EMIT_ES6', False):
+        template = 'django_js_reverse/urls_es6.tpl'
+    else:
+        template = 'django_js_reverse/urls_js.tpl'
+
+    js_content = loader.render_to_string(template, {
         'urls': urls,
         'url_prefix': script_prefix,
         'js_var_name': js_var_name,

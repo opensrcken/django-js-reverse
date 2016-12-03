@@ -37,9 +37,3 @@ class Command(BaseCommand):
         fs.save(file, ContentFile(content))
         if len(sys.argv) > 1 and sys.argv[1] in ['collectstatic_js_reverse']:
             self.stdout.write('js-reverse file written to %s' % (location))  # pragma: no cover
-
-        file = 'django-urls.ts'
-        content = generate_ts(default_urlresolver)
-        fs.save(file, ContentFile(content))
-        if len(sys.argv) > 1 and sys.argv[1] in ['collectstatic_js_reverse']:
-            self.stdout.write('js-reverse file written to %s' % (location))  # pragma: no cover
