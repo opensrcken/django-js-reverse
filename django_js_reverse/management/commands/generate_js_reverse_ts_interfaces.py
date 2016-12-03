@@ -20,9 +20,9 @@ class Command(BaseCommand):
         raise ImproperlyConfigured(
             'The generate_js_reverse_ts_interfaces command needs settings.JS_REVERSE_TS_OUTPUT_PATH to be set.')
 
-    def handle(self, *args, **options):
+    def handle(self, filename = 'django-urls.ts', *args, **options):
         location = self.get_location()
-        file = 'django-urls.ts'
+        file = filename
         fs = FileSystemStorage(location = location)
         if fs.exists(file):
             fs.delete(file)
