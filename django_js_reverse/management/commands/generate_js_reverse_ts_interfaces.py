@@ -30,4 +30,4 @@ class Command(BaseCommand):
         content = generate_ts(default_urlresolver)
         fs.save(file, ContentFile(content))
         if len(sys.argv) > 1 and sys.argv[1] in ['generate_js_reverse_ts_interfaces']:
-            self.stdout.write('Typescript declaration file written to %s' % (location))  # pragma: no cover
+            self.stdout.write('[django-js-reverse] Typescript declaration file written to %s' % location)

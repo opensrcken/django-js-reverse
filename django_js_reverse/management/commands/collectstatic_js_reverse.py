@@ -35,4 +35,4 @@ class Command(BaseCommand):
         content = generate_js(default_urlresolver)
         fs.save(file, ContentFile(content))
         if len(sys.argv) > 1 and sys.argv[1] in ['collectstatic_js_reverse']:
-            self.stdout.write('js-reverse file written to %s' % (location))  # pragma: no cover
+            self.stdout.write('[django-js-reverse] js-reverse file written to %s' % location)
