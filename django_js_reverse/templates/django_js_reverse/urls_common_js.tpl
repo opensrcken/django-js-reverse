@@ -3,6 +3,7 @@
 exports.DjangoUrls = (function () {
 
     var Urls = {};
+    window.DjangoUrls = Urls;
 
     var self = {
         url_patterns:{}
